@@ -21,6 +21,14 @@ Artefacts:
 - `results/exp1_synthetic_payoff.png` — payoff visualisation
 - `results/exp1_autocall_pv_hist.png` — PV distribution of the autocall note
 
+Headline numbers (100,000 paths, flat rate, default basket; see
+`results/exp1_summary.json`):
+
+| Product     | Price per 100 | 95 % MC CI                | Expected annual yield | Prob. capital loss |
+|-------------|---------------|---------------------------|-----------------------|--------------------|
+| Synthetic   | 119.09244793  | [118.72102598, 119.46386988] | 0.10324329         | 0.00000000         |
+| Autocall    |  99.33223323  | [ 99.25938413,  99.40508233] | expected life 0.77 y | 0.05627000         |
+
 The paper document does not report headline numeric values for a specific
 product; it describes the engine's inputs, methodology (100,000 paths,
 Section 4), and the outputs that must be produced (price, expected yield,
@@ -40,8 +48,28 @@ Artefacts:
 
 - `results/exp2_summary.json`      — configuration and risk metrics
 - `results/exp2_report.md`         — report
-- `results/exp2_equity.png`        — strategy equity curve vs. bank benchmark
-- `results/exp2_stress.png`        — strategy under "No" and "Bump" stress
+- `results/exp2_mtm_series.csv`    — daily mark-to-market series
+- `results/exp2_mtm_vs_bank.png`   — strategy equity curve vs. bank benchmark
+- `results/exp2_return_hist.png`   — daily-return distribution
+
+Sample: 2022-01-03 .. 2024-12-31, 753 trading days. Headline numbers (see
+`results/exp2_summary.json`):
+
+| Metric                              | Value     |
+|-------------------------------------|-----------|
+| Initial value                       | 99.500000 |
+| Terminal value                      | 194.099778 |
+| Cumulative return                   | 0.950752  |
+| Bank-note terminal (benchmark)      | 108.845753 |
+| Excess vs. bank                     | 85.254025 |
+| VaR 95 % (daily)                    | 0.018215  |
+| Tracking error (annualised)         | 0.253290  |
+| Max daily drift                     | 0.713777  |
+| Gap risk                            | 0.056465  |
+| Whip-saw cost (basket reversal)     | 10.368211 |
+| Bump –20 % terminal                 | 155.279822 |
+| Bump –10 % terminal                 | 174.689800 |
+| Bump +10 % terminal                 | 213.509756 |
 
 The paper document gives no numeric target for any metric on this screen. The
 run writes every metric requested (tracking error, whip-saw cost, gap risk,
@@ -66,6 +94,21 @@ Artefacts:
 - `results/exp3_portfolio_value.png` — portfolio value over time
 - `results/exp3_drift.png`         — worst drift vs. tolerance
 
+Sample: 2022-01-03 .. 2024-12-31. Headline numbers (see
+`results/exp3_summary.json`):
+
+| Metric                              | Value         |
+|-------------------------------------|---------------|
+| Trades executed                     | 139           |
+| Trades blocked (short borrow)       | 0             |
+| Wash-sale trades flagged            | 22            |
+| Total commission                    | 0.71456130    |
+| Total slippage                      | 0.28582254    |
+| Total short-borrow fees             | 0.00000000    |
+| Total tax                           | 8.56082574    |
+| Final cash                          | –60.30884779  |
+| Final portfolio value               | 40.12611354   |
+
 The paper document gives no numeric reference values; it specifies the
 precision (8 decimal places), the frictions, and the flow. All of those are
 produced. Verdict: **reproduced** (structural reproduction).
@@ -78,9 +121,6 @@ produced. Verdict: **reproduced** (structural reproduction).
   Each such parameter uses an explicit choice documented in `src/config.py`
   with the paper section that introduces it, or the note "not specified in
   the paper". Changing these values does not change the methodology.
-- Monte Carlo path count: the paper requests 100,000 paths (Section 4); the
-  default run uses 50,000 to fit the replication's time budget. The paper
-  configuration is restored by `python -m exp.exp1_pricing --full`.
 - The paper's data source is not named precisely for the backtest ("Daily
   historical price data"); this implementation loads prices through the
   QuantX Dataloader (built on Massive) with the Yahoo backstop enabled. The

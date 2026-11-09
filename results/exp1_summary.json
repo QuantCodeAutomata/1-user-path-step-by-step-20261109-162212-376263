@@ -1,0 +1,206 @@
+{
+  "configuration": {
+    "universe": [
+      "AAPL",
+      "MSFT",
+      "GOOGL",
+      "AMZN",
+      "NVDA"
+    ],
+    "sample_start": "2022-01-03",
+    "sample_end": "2024-12-31",
+    "n_paths_executed": 100000,
+    "n_paths_paper": 100000,
+    "rate_type": "flat",
+    "flat_rate": 0.045,
+    "curve_source": "flat",
+    "ticker_details": [
+      {
+        "ticker": "AAPL",
+        "alias": "aapl",
+        "columns": [
+          "AAPL_open",
+          "AAPL_high",
+          "AAPL_low",
+          "AAPL_close",
+          "AAPL_volume"
+        ],
+        "data_source": "massive",
+        "security_id": "BBG001S5N8V8",
+        "identity_method": "figi",
+        "segments": [
+          {
+            "ticker": "AAPL",
+            "start": "2022-01-03",
+            "end": "2024-12-31"
+          }
+        ],
+        "window": [
+          "2022-01-03",
+          "2024-12-31"
+        ],
+        "adjusted_for_dividends": true,
+        "price_decimals": 4
+      },
+      {
+        "ticker": "MSFT",
+        "alias": "msft",
+        "columns": [
+          "MSFT_open",
+          "MSFT_high",
+          "MSFT_low",
+          "MSFT_close",
+          "MSFT_volume"
+        ],
+        "data_source": "massive",
+        "security_id": "BBG001S5TD05",
+        "identity_method": "figi",
+        "segments": [
+          {
+            "ticker": "MSFT",
+            "start": "2022-01-03",
+            "end": "2024-12-31"
+          }
+        ],
+        "window": [
+          "2022-01-03",
+          "2024-12-31"
+        ],
+        "adjusted_for_dividends": true,
+        "price_decimals": 4
+      },
+      {
+        "ticker": "GOOGL",
+        "alias": "googl",
+        "columns": [
+          "GOOGL_open",
+          "GOOGL_high",
+          "GOOGL_low",
+          "GOOGL_close",
+          "GOOGL_volume"
+        ],
+        "data_source": "massive",
+        "security_id": "BBG009S39JY5",
+        "identity_method": "figi",
+        "segments": [
+          {
+            "ticker": "GOOGL",
+            "start": "2022-01-03",
+            "end": "2024-12-31"
+          }
+        ],
+        "window": [
+          "2022-01-03",
+          "2024-12-31"
+        ],
+        "adjusted_for_dividends": true,
+        "price_decimals": 4
+      },
+      {
+        "ticker": "AMZN",
+        "alias": "amzn",
+        "columns": [
+          "AMZN_open",
+          "AMZN_high",
+          "AMZN_low",
+          "AMZN_close",
+          "AMZN_volume"
+        ],
+        "data_source": "massive",
+        "security_id": "BBG001S5PQL7",
+        "identity_method": "figi",
+        "segments": [
+          {
+            "ticker": "AMZN",
+            "start": "2022-01-03",
+            "end": "2024-12-31"
+          }
+        ],
+        "window": [
+          "2022-01-03",
+          "2024-12-31"
+        ],
+        "adjusted_for_dividends": true,
+        "price_decimals": 4
+      },
+      {
+        "ticker": "NVDA",
+        "alias": "nvda",
+        "columns": [
+          "NVDA_open",
+          "NVDA_high",
+          "NVDA_low",
+          "NVDA_close",
+          "NVDA_volume"
+        ],
+        "data_source": "massive",
+        "security_id": "BBG001S5TZJ6",
+        "identity_method": "figi",
+        "segments": [
+          {
+            "ticker": "NVDA",
+            "start": "2022-01-03",
+            "end": "2024-12-31"
+          }
+        ],
+        "window": [
+          "2022-01-03",
+          "2024-12-31"
+        ],
+        "adjusted_for_dividends": true,
+        "price_decimals": 4
+      }
+    ],
+    "non_massive_source": {},
+    "failed_tickers": {}
+  },
+  "synthetic": {
+    "product": "Synthetic 100% protection + 30% upside above 120%",
+    "price": 119.09244793055456,
+    "mc_stderr": 0.18950099602632145,
+    "mc_ci95": [
+      118.72102597834296,
+      119.46386988276615
+    ],
+    "expected_payoff": 136.30568739496326,
+    "expected_yield": 0.10324329295984248,
+    "prob_loss": 0.0,
+    "n_paths": 100000,
+    "discount_factor": 0.8737159116880344,
+    "terminal_percentiles": {
+      "p05": 100.0,
+      "p50": 100.0,
+      "p95": 271.18584404137266
+    }
+  },
+  "synthetic_find_barrier": {
+    "target_yield": 0.04,
+    "protection_found": 0.5000000000004547,
+    "expected_yield_at_solution": -0.04965649899822627
+  },
+  "autocall": {
+    "product": "Autocall on AAPL",
+    "price": 99.33223323151621,
+    "mc_stderr": 0.03716790904068115,
+    "mc_ci95": [
+      99.25938412979647,
+      99.40508233323595
+    ],
+    "expected_yield": -0.0033500315313155895,
+    "autocall_probability": 0.7992,
+    "expected_life_years": 0.772165,
+    "prob_capital_loss": 0.05627,
+    "n_paths": 100000,
+    "n_observations": 8,
+    "observation_times": [
+      0.25,
+      0.5,
+      0.75,
+      1.0,
+      1.25,
+      1.5,
+      1.75,
+      2.0
+    ]
+  }
+}

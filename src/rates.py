@@ -42,17 +42,29 @@ class YieldCurve:
     source: str
     as_of: pd.Timestamp
 
-    def zero(self, t: float | np.ndarray) -> np.ndarray:
-        """Linear interpolation of the zero rate at time ``t`` (years)."""
-        t_arr = np.atleast_1d(np.asarray(t, dtype=float))
+    def zero(self, t: float | np.ndarray) -> float | np.ndarray:
+        """Linear interpolation of the zero rate at time ``t`` (years).
+
+        Scalar input returns a Python float; array input returns an array of
+        the same shape.
+        """
+        t_in = np.asarray(t, dtype=float)
+        t_arr = np.atleast_1d(t_in)
         if t_arr.min() < 0.0:
             raise ValueError("Time to maturity must be non-negative")
-        return np.interp(t_arr, self.tenors, self.zero_rates)
+        r = np.interp(t_arr, self.tenors, self.zero_rates)
+        return float(r[0]) if t_in.ndim == 0 else r
 
-    def discount(self, t: float | np.ndarray) -> np.ndarray:
-        """Discount factor P(0, t) = exp(-r(t) * t) under continuous compounding."""
-        t_arr = np.atleast_1d(np.asarray(t, dtype=float))
-        return np.exp(-self.zero(t_arr) * t_arr)
+    def discount(self, t: float | np.ndarray) -> float | np.ndarray:
+        """Discount factor P(0, t) = exp(-r(t) * t) under continuous compounding.
+
+        Returns a Python float when ``t`` is scalar, else a numpy array of the
+        same shape.
+        """
+        t_in = np.asarray(t, dtype=float)
+        t_arr = np.atleast_1d(t_in)
+        df = np.exp(-self.zero(t_arr) * t_arr)
+        return float(df[0]) if t_in.ndim == 0 else df
 
     def forward(self, t1: float, t2: float) -> float:
         """Simple forward rate from t1 to t2 (continuously compounded)."""

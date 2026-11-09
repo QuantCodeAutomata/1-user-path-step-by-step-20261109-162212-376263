@@ -31,10 +31,9 @@ SAMPLE_END: str = "2024-12-31"
 # paths".
 N_PATHS_PAPER: int = 100_000
 
-# Number of paths actually executed for every call unless --full is passed.
-# A reduced value keeps the full experiment within the replication's time
-# budget; the method and all other parameters are unchanged.
-N_PATHS_RUN: int = 50_000
+# Number of paths executed for every call unless --full is passed; equal to
+# the paper configuration.
+N_PATHS_RUN: int = 100_000
 
 # Daily time-stepping of the GBM: 252 trading days per year, in days. Not
 # specified in the paper; standard convention for daily-step GBM.

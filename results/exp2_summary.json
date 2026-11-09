@@ -1,0 +1,176 @@
+{
+  "configuration": {
+    "universe": [
+      "AAPL",
+      "MSFT",
+      "GOOGL",
+      "AMZN",
+      "NVDA"
+    ],
+    "sample_start": "2022-01-03",
+    "sample_end": "2024-12-31",
+    "sales_charge": 0.005,
+    "bank_benchmark_rate": 0.03,
+    "stress_bumps": [
+      -0.2,
+      -0.1,
+      0.1
+    ],
+    "ticker_details": [
+      {
+        "ticker": "AAPL",
+        "alias": "aapl",
+        "columns": [
+          "AAPL_open",
+          "AAPL_high",
+          "AAPL_low",
+          "AAPL_close",
+          "AAPL_volume"
+        ],
+        "data_source": "massive",
+        "security_id": "BBG001S5N8V8",
+        "identity_method": "figi",
+        "segments": [
+          {
+            "ticker": "AAPL",
+            "start": "2022-01-03",
+            "end": "2024-12-31"
+          }
+        ],
+        "window": [
+          "2022-01-03",
+          "2024-12-31"
+        ],
+        "adjusted_for_dividends": true,
+        "price_decimals": 4
+      },
+      {
+        "ticker": "MSFT",
+        "alias": "msft",
+        "columns": [
+          "MSFT_open",
+          "MSFT_high",
+          "MSFT_low",
+          "MSFT_close",
+          "MSFT_volume"
+        ],
+        "data_source": "massive",
+        "security_id": "BBG001S5TD05",
+        "identity_method": "figi",
+        "segments": [
+          {
+            "ticker": "MSFT",
+            "start": "2022-01-03",
+            "end": "2024-12-31"
+          }
+        ],
+        "window": [
+          "2022-01-03",
+          "2024-12-31"
+        ],
+        "adjusted_for_dividends": true,
+        "price_decimals": 4
+      },
+      {
+        "ticker": "GOOGL",
+        "alias": "googl",
+        "columns": [
+          "GOOGL_open",
+          "GOOGL_high",
+          "GOOGL_low",
+          "GOOGL_close",
+          "GOOGL_volume"
+        ],
+        "data_source": "massive",
+        "security_id": "BBG009S39JY5",
+        "identity_method": "figi",
+        "segments": [
+          {
+            "ticker": "GOOGL",
+            "start": "2022-01-03",
+            "end": "2024-12-31"
+          }
+        ],
+        "window": [
+          "2022-01-03",
+          "2024-12-31"
+        ],
+        "adjusted_for_dividends": true,
+        "price_decimals": 4
+      },
+      {
+        "ticker": "AMZN",
+        "alias": "amzn",
+        "columns": [
+          "AMZN_open",
+          "AMZN_high",
+          "AMZN_low",
+          "AMZN_close",
+          "AMZN_volume"
+        ],
+        "data_source": "massive",
+        "security_id": "BBG001S5PQL7",
+        "identity_method": "figi",
+        "segments": [
+          {
+            "ticker": "AMZN",
+            "start": "2022-01-03",
+            "end": "2024-12-31"
+          }
+        ],
+        "window": [
+          "2022-01-03",
+          "2024-12-31"
+        ],
+        "adjusted_for_dividends": true,
+        "price_decimals": 4
+      },
+      {
+        "ticker": "NVDA",
+        "alias": "nvda",
+        "columns": [
+          "NVDA_open",
+          "NVDA_high",
+          "NVDA_low",
+          "NVDA_close",
+          "NVDA_volume"
+        ],
+        "data_source": "massive",
+        "security_id": "BBG001S5TZJ6",
+        "identity_method": "figi",
+        "segments": [
+          {
+            "ticker": "NVDA",
+            "start": "2022-01-03",
+            "end": "2024-12-31"
+          }
+        ],
+        "window": [
+          "2022-01-03",
+          "2024-12-31"
+        ],
+        "adjusted_for_dividends": true,
+        "price_decimals": 4
+      }
+    ],
+    "non_massive_source": {}
+  },
+  "summary": {
+    "initial_value": 99.5,
+    "terminal_value": 194.09977805001188,
+    "cumulative_return": 0.950751538191074,
+    "bank_terminal_value": 108.84575316883075,
+    "excess_vs_bank": 85.25402488118112,
+    "var_95": 0.018214700645345392,
+    "tracking_error_ann": 0.25329011797694645,
+    "max_daily_drift": 0.7137774254402313,
+    "gap_risk": 0.0564645609312634,
+    "sales_charge": 0.005
+  },
+  "stress_scenarios": {
+    "bump_-20pct_terminal": 155.2798224400095,
+    "bump_-10pct_terminal": 174.68980024501067,
+    "bump_+10pct_terminal": 213.50975585501303
+  },
+  "whipsaw_cost": 10.368210836109512
+}

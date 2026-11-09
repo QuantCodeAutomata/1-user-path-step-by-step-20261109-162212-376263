@@ -1,0 +1,168 @@
+{
+  "configuration": {
+    "universe": [
+      "AAPL",
+      "MSFT",
+      "GOOGL",
+      "AMZN",
+      "NVDA"
+    ],
+    "sample_start": "2022-01-03",
+    "sample_end": "2024-12-31",
+    "rebalance_tolerance_pct": 0.08,
+    "commission_rate": 0.0005,
+    "slippage_rate": 0.0002,
+    "short_borrow_rate": 0.01,
+    "wash_sale_window_days": 21,
+    "ticker_details": [
+      {
+        "ticker": "AAPL",
+        "alias": "aapl",
+        "columns": [
+          "AAPL_open",
+          "AAPL_high",
+          "AAPL_low",
+          "AAPL_close",
+          "AAPL_volume"
+        ],
+        "data_source": "massive",
+        "security_id": "BBG001S5N8V8",
+        "identity_method": "figi",
+        "segments": [
+          {
+            "ticker": "AAPL",
+            "start": "2022-01-03",
+            "end": "2024-12-31"
+          }
+        ],
+        "window": [
+          "2022-01-03",
+          "2024-12-31"
+        ],
+        "adjusted_for_dividends": true,
+        "price_decimals": 4
+      },
+      {
+        "ticker": "MSFT",
+        "alias": "msft",
+        "columns": [
+          "MSFT_open",
+          "MSFT_high",
+          "MSFT_low",
+          "MSFT_close",
+          "MSFT_volume"
+        ],
+        "data_source": "massive",
+        "security_id": "BBG001S5TD05",
+        "identity_method": "figi",
+        "segments": [
+          {
+            "ticker": "MSFT",
+            "start": "2022-01-03",
+            "end": "2024-12-31"
+          }
+        ],
+        "window": [
+          "2022-01-03",
+          "2024-12-31"
+        ],
+        "adjusted_for_dividends": true,
+        "price_decimals": 4
+      },
+      {
+        "ticker": "GOOGL",
+        "alias": "googl",
+        "columns": [
+          "GOOGL_open",
+          "GOOGL_high",
+          "GOOGL_low",
+          "GOOGL_close",
+          "GOOGL_volume"
+        ],
+        "data_source": "massive",
+        "security_id": "BBG009S39JY5",
+        "identity_method": "figi",
+        "segments": [
+          {
+            "ticker": "GOOGL",
+            "start": "2022-01-03",
+            "end": "2024-12-31"
+          }
+        ],
+        "window": [
+          "2022-01-03",
+          "2024-12-31"
+        ],
+        "adjusted_for_dividends": true,
+        "price_decimals": 4
+      },
+      {
+        "ticker": "AMZN",
+        "alias": "amzn",
+        "columns": [
+          "AMZN_open",
+          "AMZN_high",
+          "AMZN_low",
+          "AMZN_close",
+          "AMZN_volume"
+        ],
+        "data_source": "massive",
+        "security_id": "BBG001S5PQL7",
+        "identity_method": "figi",
+        "segments": [
+          {
+            "ticker": "AMZN",
+            "start": "2022-01-03",
+            "end": "2024-12-31"
+          }
+        ],
+        "window": [
+          "2022-01-03",
+          "2024-12-31"
+        ],
+        "adjusted_for_dividends": true,
+        "price_decimals": 4
+      },
+      {
+        "ticker": "NVDA",
+        "alias": "nvda",
+        "columns": [
+          "NVDA_open",
+          "NVDA_high",
+          "NVDA_low",
+          "NVDA_close",
+          "NVDA_volume"
+        ],
+        "data_source": "massive",
+        "security_id": "BBG001S5TZJ6",
+        "identity_method": "figi",
+        "segments": [
+          {
+            "ticker": "NVDA",
+            "start": "2022-01-03",
+            "end": "2024-12-31"
+          }
+        ],
+        "window": [
+          "2022-01-03",
+          "2024-12-31"
+        ],
+        "adjusted_for_dividends": true,
+        "price_decimals": 4
+      }
+    ],
+    "non_massive_source": {}
+  },
+  "summary": {
+    "n_trades": 139,
+    "n_blocked_borrow": 0,
+    "n_wash_sales": 22,
+    "total_commission": 0.7145613,
+    "total_slippage": 0.28582254,
+    "total_borrow_fee": 0.0,
+    "total_tax": 8.56082574,
+    "final_cash": -60.30884779,
+    "final_portfolio_value": 40.126113540000006,
+    "decimals": 8
+  }
+}

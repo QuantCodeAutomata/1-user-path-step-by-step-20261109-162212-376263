@@ -163,16 +163,24 @@ def simulate_paths(
     curve: YieldCurve,
     n_paths: int,
     maturity_years: float,
+    obs_times: np.ndarray | None = None,
     steps_per_year: int = TRADING_DAYS_PER_YEAR,
     seed: int = RANDOM_SEED,
     antithetic: bool = True,
+    chunk_size: int = 5000,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Simulate correlated GBM paths under the risk-neutral measure.
 
     Returns a tuple ``(times, paths)`` where ``times`` is shape ``(n_steps+1,)``
-    and ``paths`` is shape ``(n_paths, n_steps+1, n_assets)``.
+    (always including 0 at the front and ``maturity_years`` at the end) and
+    ``paths`` is shape ``(n_paths, n_steps+1, n_assets)``.
 
-    Variance reduction via antithetic variates halves the independent draws:
+    When ``obs_times`` is given, the grid is restricted to those times (plus 0
+    and ``maturity_years``) instead of a dense daily step; this keeps memory
+    bounded for products that only need a few observation dates.
+
+    Paths are simulated in chunks of ``chunk_size`` to cap peak memory;
+    variance reduction via antithetic variates halves the independent draws so
     ``n_paths`` must be even in that case.
     """
     _validate_market(market)
@@ -181,36 +189,59 @@ def simulate_paths(
     if n_paths < 2:
         raise ValueError("n_paths must be >= 2")
 
-    n_steps = max(1, int(round(maturity_years * steps_per_year)))
-    dt = maturity_years / n_steps
-    times = np.linspace(0.0, maturity_years, n_steps + 1)
+    if obs_times is None:
+        n_steps = max(1, int(round(maturity_years * steps_per_year)))
+        times = np.linspace(0.0, maturity_years, n_steps + 1)
+    else:
+        grid = np.unique(np.concatenate(([0.0], np.asarray(obs_times, float),
+                                         [maturity_years])))
+        grid = grid[(grid >= 0.0) & (grid <= maturity_years + 1e-12)]
+        times = grid
+        n_steps = len(times) - 1
 
     n_assets = len(market.tickers)
     L = np.linalg.cholesky(market.correlation + 1e-12 * np.eye(n_assets))
 
-    rng = np.random.default_rng(seed)
-    if antithetic:
-        half = n_paths // 2
-        base = rng.standard_normal(size=(half, n_steps, n_assets))
-        z = np.concatenate([base, -base], axis=0)
-    else:
-        z = rng.standard_normal(size=(n_paths, n_steps, n_assets))
-    # Correlate across assets: (n_paths, n_steps, n_assets) @ L.T
-    z = z @ L.T
-
-    # Time-dependent short rate via forward rates of the curve.
+    dts = np.diff(times)
+    # Piecewise-constant forward rates from the curve across each segment.
     fwd = np.array([curve.forward(times[i], times[i + 1]) for i in range(n_steps)])
-
     vol = market.vol
     q = market.div_yield
-    drift = (fwd[None, :, None] - q[None, None, :] - 0.5 * vol[None, None, :] ** 2) * dt
-    diffusion = vol[None, None, :] * np.sqrt(dt) * z
+    drift = (fwd[:, None] - q[None, :] - 0.5 * vol[None, :] ** 2) * dts[:, None]
+    sqrt_dt = np.sqrt(dts)
 
-    log_steps = drift + diffusion
-    log_paths = np.concatenate(
-        [np.zeros((n_paths, 1, n_assets)), np.cumsum(log_steps, axis=1)], axis=1
-    )
-    paths = market.spot[None, None, :] * np.exp(log_paths)
+    rng = np.random.default_rng(seed)
+    if antithetic and n_paths % 2 != 0:
+        raise ValueError("n_paths must be even when antithetic variates are used")
+
+    paths = np.empty((n_paths, n_steps + 1, n_assets), dtype=np.float64)
+    paths[:, 0, :] = market.spot[None, :]
+    draws_per_pair = n_steps * n_assets
+
+    done = 0
+    while done < n_paths:
+        if antithetic:
+            half = min(chunk_size // 2, (n_paths - done) // 2)
+            base = rng.standard_normal(size=(half, n_steps, n_assets))
+            z = np.concatenate([base, -base], axis=0)
+            del base
+        else:
+            take = min(chunk_size, n_paths - done)
+            z = rng.standard_normal(size=(take, n_steps, n_assets))
+        # Correlate across assets: (chunk, steps, assets) @ L.T
+        z = z @ L.T
+        log_steps = drift[None, :, :] + vol[None, None, :] * sqrt_dt[None, :, None] * z
+        del z
+        log_cum = np.cumsum(log_steps, axis=1)
+        del log_steps
+        chunk_paths = market.spot[None, None, :] * np.exp(log_cum)
+        del log_cum
+        end = done + chunk_paths.shape[0]
+        paths[done:end, 1:, :] = chunk_paths
+        done = end
+        del chunk_paths
+        _ = draws_per_pair  # silence unused warning in future edits
+
     return times, paths
 
 
@@ -227,16 +258,19 @@ def price_synthetic(
     if not np.isclose(product.weights.sum(), 1.0):
         raise ValueError("weights must sum to 1")
 
+    # Synthetic payoff is European (terminal only), so a single-step grid is
+    # exact under GBM with piecewise-constant drift and keeps memory bounded.
     times, paths = simulate_paths(
         market=market,
         curve=curve,
         n_paths=n_paths,
         maturity_years=product.maturity_years,
+        obs_times=np.array([product.maturity_years]),
         seed=seed,
     )
     terminal = paths[:, -1, :]
     payoff = product.payoff(terminal, market.spot)
-    discount = float(curve.discount(product.maturity_years))
+    discount = curve.discount(product.maturity_years)
     present_values = discount * payoff
     price = float(present_values.mean())
     mc_stderr = float(present_values.std(ddof=1) / np.sqrt(n_paths))
@@ -274,16 +308,20 @@ def price_autocall(
     if len(market.tickers) != 1:
         raise ValueError("Autocall is a single-name product (paper step 7)")
 
+    obs_times = product.observation_times()
+    # Simulate only at observation dates (plus 0 and maturity) — GBM with
+    # piecewise-constant drift is exact on any grid, so the autocall logic is
+    # unaffected and peak memory stays O(n_paths * n_obs).
     times, paths = simulate_paths(
         market=market,
         curve=curve,
         n_paths=n_paths,
         maturity_years=product.maturity_years,
+        obs_times=obs_times,
         seed=seed,
     )
     S0 = market.spot[0]
     prices = paths[:, :, 0] / S0  # normalized to spot = 1
-    obs_times = product.observation_times()
     obs_indices = np.searchsorted(times, obs_times)
     obs_indices = np.clip(obs_indices, 0, len(times) - 1)
 
